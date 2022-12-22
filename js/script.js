@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', function() {
     
     // Timer
 
-    const deadline = '2022-06-11';
+    const deadline = '2023-06-01';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -279,48 +279,53 @@ window.addEventListener('DOMContentLoaded', function() {
     // Slider
 
     let slideIndex = 1;
+
     const slides = document.querySelectorAll('.offer__slide'),
+        slider = document.querySelector('.offer__slider'),
         prev = document.querySelector('.offer__slider-prev'),
         next = document.querySelector('.offer__slider-next'),
         total = document.querySelector('#total'),
         current = document.querySelector('#current');
-
     showSlides(slideIndex);
-
-    if (slides.length < 10) {
-        total.textContent = `0${slides.length}`;
-    } else {
-        total.textContent = slides.length;
-    }
-
-    function showSlides(n) {
-        if (n > slides.length) {
-            slideIndex = 1;
-        }
-        if (n < 1) {
+    updateTotalSlides();
+   
+    function showSlides (n) {
+        if (n == 0) {
             slideIndex = slides.length;
+            n = slides.length;
+        } else if (n > slides.length) {
+            slideIndex = 1;
+            n = 1;
         }
-
-        slides.forEach((item) => item.style.display = 'none');
-
-        slides[slideIndex - 1].style.display = 'block'; // Как ваша самостоятельная работа - переписать на использование классов show/hide
-        
-        if (slides.length < 10) {
-            current.textContent =  `0${slideIndex}`;
+        slides.forEach(slide => slide.style.display = 'none')
+        slides[n - 1].style.display = 'block';
+    }
+    function plusSlide(n) {
+        showSlides(slideIndex += n)
+    }
+    function updateTotalSlides() {
+        if (slideIndex < 10) {
+            current.innerHTML = `0${slideIndex}`;
         } else {
-            current.textContent =  slideIndex;
+            current.innerHTML = `${slideIndex}`;
+        }
+        if (slides.length < 10) {
+            total.innerHTML = `0${slides.length}`;
+        } else {
+            total.innerHTML = `${slides.length}`;
         }
     }
 
-    function plusSlides (n) {
-        showSlides(slideIndex += n);
-    }
+    prev.addEventListener('click', () => {
+        plusSlide(-1); 
+        updateTotalSlides();
+    })
+    next.addEventListener('click', () => {
+        plusSlide(+1);
+        updateTotalSlides(); 
+    })
 
-    prev.addEventListener('click', function(){
-        plusSlides(-1);
-    });
+    
 
-    next.addEventListener('click', function(){
-        plusSlides(1);
-    });
+
 });
